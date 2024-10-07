@@ -199,7 +199,8 @@ def execute_algorithm():
 
     check_and_alert(tickers, last_values)
 
-schedule.every(1).hours.do(lambda: execute_algorithm())
+# schedule.every(1).hours.do(lambda: execute_algorithm())
+schedule.every(5).minutes.do(lambda: execute_algorithm())
 
 while True:
     schedule.run_pending()
