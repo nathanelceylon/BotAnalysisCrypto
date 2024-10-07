@@ -200,8 +200,11 @@ def execute_algorithm():
     check_and_alert(ticker_list, last_values)
 
 # schedule.every(1).hours.do(lambda: execute_algorithm())
-schedule.every(2).minutes.do(lambda: execute_algorithm())
+#schedule.every(2).minutes.do(lambda: execute_algorithm())
+
+schedule.every().day.at("08:00").do(execute_algorithm())
 
 while True:
     schedule.run_pending()
     time.sleep(60)
+
