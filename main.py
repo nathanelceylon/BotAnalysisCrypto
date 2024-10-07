@@ -197,10 +197,10 @@ def execute_algorithm():
             'MACD_Signal': last_row['MACD_Signal']
         }
 
-    check_and_alert(tickers, last_values)
+    check_and_alert(ticker_list, last_values)
 
 # schedule.every(1).hours.do(lambda: execute_algorithm())
-schedule.every(5).minutes.do(lambda: execute_algorithm())
+schedule.every(2).minutes.do(lambda: execute_algorithm())
 
 while True:
     schedule.run_pending()
