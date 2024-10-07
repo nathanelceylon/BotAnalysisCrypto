@@ -128,3 +128,72 @@ for t in ticker_list:
       buy_tickers.append(t)
       
 print(buy_tickers)
+
+def send_email(subject, body, recipient_email):
+    sender_email = "nathanelceylon@gmail.com"
+    sender_password = "wnqy dyrm pqjd sxyh"
+    
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient_email, msg.as_string())
+        print(f"Email envoyé à {recipient_email}")
+    except Exception as e:
+        print(f"Erreur lors de l'envoi de l'email: {e}")
+
+# Fonction pour vérifier les alertes et envoyer des emails
+def check_and_alert(tickers, last_values):
+    cryptos_to_sell = []
+    cryptos_to_buy = []
+    
+    for ticker in tickers:
+        if (last_values[ticker]['RSI'] > 85 or last_values[ticker]['+DI'] + 5 < last_values[ticker]['-DI']):
+            cryptos_to_sell.append(ticker)
+        if (last_values[ticker]['RSI'] < 80 and last_values[ticker]['+DI'] - 5 > last_values[ticker]['-DI'] and last_values[ticker]['MACD'] > last_values[ticker]['MACD_Signal']):
+            cryptos_to_buy.append(ticker)
+
+    if cryptos_to_sell:
+        subject = "Crypto SELL ALERT"
+        body = f"Crypto(s) à vendre rapidement:\n\n" + "\n".join(cryptos_to_sell)
+        send_email(subject, body, "nathanelceylon@gmail.com")
+
+    if cryptos_to_buy:
+        subject = "Crypto BUY ALERT"
+        body = f"Crypto(s) à acheter rapidement:\n\n" + "\n".join(cryptos_to_buy)
+        send_email(subject, body, "nathanelceylon@gmail.com")
+
+# Fonction principale pour exécuter l'algorithme
+def execute_algorithm(tickers):
+    print("------ Checking for alerts... ------")
+    datasets = download_data(tickers, start_date='2024-04-01', interval='1d')
+    
+    last_values = {}
+    for ticker, df in datasets.items():
+        df = calculate_technical_indicators(df)
+        last_row = df.iloc[-1]
+
+        last_values[ticker] = {
+            'BB_Middle': last_row['BB_Middle'],
+            'ADX': last_row['ADX'],
+            '+DI': last_row['+DI'],
+            '-DI': last_row['-DI'],
+            'Close': last_row['Close'],
+            'RSI': last_row['RSI'],
+            'MACD': last_row['MACD'],
+            'MACD_Signal': last_row['MACD_Signal']
+        }
+
+    check_and_alert(tickers, last_values)
+
+schedule.every(1).hours.do(lambda: execute_algorithm(buy_tickers))
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
