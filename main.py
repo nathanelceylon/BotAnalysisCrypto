@@ -175,9 +175,11 @@ def check_and_alert(tickers, last_values):
         send_email(subject, body, "nathanelceylon@gmail.com")
 
 # Fonction principale pour exécuter l'algorithme
-def execute_algorithm(tickers):
+def execute_algorithm():
     print("------ Checking for alerts... ------")
-    datasets = download_data(tickers, start_date='2024-04-01', interval='1d')
+    ticker_list = get_top_20_cryptos()
+    datasets = {ticker: yf.download(tickers=ticker, start='2024-04-01', interval='1d') for ticker in ticker_list}
+
     
     last_values = {}
     for ticker, df in datasets.items():
@@ -197,7 +199,7 @@ def execute_algorithm(tickers):
 
     check_and_alert(tickers, last_values)
 
-schedule.every(1).hours.do(lambda: execute_algorithm(buy_tickers))
+schedule.every(1).hours.do(lambda: execute_algorithm())
 
 while True:
     schedule.run_pending()
