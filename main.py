@@ -2,6 +2,11 @@ import requests
 import yfinance as yf
 import pandas as pd
 import ta
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import schedule
+import time
 
 def get_top_20_cryptos():
     # Récupérer une large liste de cryptomonnaies par capitalisation boursière
