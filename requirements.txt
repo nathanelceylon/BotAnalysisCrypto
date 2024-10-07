@@ -1,0 +1,10 @@
+requests
+pandas
+smtplib
+MIMEText
+MIMEMultipart
+schedule
+time
+ta 
+yf
+sns
