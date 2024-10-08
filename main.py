@@ -210,9 +210,9 @@ def execute_algorithm():
 
 #schedule.every().day.at("08:00").do(execute_algorithm)
 
-while True:
+#while True:
     #schedule.run_pending()
-    execute_algorithm()
-    print("Attente de 2 minutes avant la prochaine vérification...")
-    time.sleep(120)
+#    execute_algorithm()
+#    print("Attente de 2 minutes avant la prochaine vérification...")
+#    time.sleep(120)
 
