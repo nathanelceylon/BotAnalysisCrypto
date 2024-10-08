@@ -204,7 +204,9 @@ def execute_algorithm():
     print("Exécution terminée.")
     check_and_alert(ticker_list, last_values)
     print("Mail envoyé.")
-    
+
+execute_algorithm()
+
 #schedule.every(12).hours.do(lambda: execute_algorithm)
 #schedule.every(5).minutes.do(lambda: execute_algorithm)
 
