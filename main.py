@@ -174,9 +174,14 @@ def check_and_alert(tickers, last_values):
         body = f"Crypto(s) à acheter rapidement:\n\n" + "\n".join(cryptos_to_buy)
         send_email(subject, body, "nathanelceylon@gmail.com")
 
+    if not cryptos_to_sell and not cryptos_to_buy:
+        subject = "Crypto Update"
+        body = "Don't move! Aucune action recommandée pour le moment."
+        send_email(subject, body, "nathanelceylon@gmail.com")
+
 # Fonction principale pour exécuter l'algorithme
 def execute_algorithm():
-    print("------ Checking for alerts... ------")
+    print("Execution du script...")
     ticker_list = get_top_20_cryptos()
     datasets = {ticker: yf.download(tickers=ticker, start='2024-04-01', interval='1d') for ticker in ticker_list}
 
@@ -196,15 +201,18 @@ def execute_algorithm():
             'MACD': last_row['MACD'],
             'MACD_Signal': last_row['MACD_Signal']
         }
-
+    print("Exécution terminée.")
     check_and_alert(ticker_list, last_values)
-
+    print("Mail envoyé.")
+    
 #schedule.every(12).hours.do(lambda: execute_algorithm)
-schedule.every(5).minutes.do(lambda: execute_algorithm)
+#schedule.every(5).minutes.do(lambda: execute_algorithm)
 
 #schedule.every().day.at("08:00").do(execute_algorithm)
 
 while True:
-    schedule.run_pending()
-    time.sleep(60)
+    #schedule.run_pending()
+    execute_algorithm()
+    print("Attente de 2 minutes avant la prochaine vérification...")
+    time.sleep(120)
 
